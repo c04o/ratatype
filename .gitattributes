@@ -1,0 +1,17 @@
+# normalize line endings
+* text=auto
+
+# standard c/rust/nix files as text
+*.rs text
+*.toml text
+*.nix text
+*.md text
+*.txt text
+
+# ensure shell scripts always use lf (nix/linux requirement)
+*.sh text eol=lf
+
+# denote binaries (images, compiled blobs) to prevent corruption
+*.png binary
+*.jpg binary
+*.ico binary

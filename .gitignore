@@ -1,0 +1,21 @@
+# rust
+/target/
+
+# cargo-audit or similar
+cargo-lock.json.bak
+
+# nix
+.direnv/
+result
+result-*
+.envrc
+
+# ide/os
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+*.log
