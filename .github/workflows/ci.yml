@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  check:
+    name: quality-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # check if the flake itself is valid
+      - name: check flake
+        run: nix flake check
+
+      # formatting & clippy
+      - name: lint (fmt & clippy)
+        run: |
+          nix develop --command cargo fmt --all -- --check
+          nix develop --command cargo clippy -- -D warnings
+
+      # only runs if lint passes
+      - name: run tests
+        run: nix develop --command cargo test --verbose
+
+  # cross-compilation check
+  cross-compile-check:
+    name: windows-build-check
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: windows build    
+        run: nix develop --command cargo zigbuild --target x86_64-pc-windows-gnu --release
+
