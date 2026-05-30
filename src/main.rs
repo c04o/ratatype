@@ -31,7 +31,7 @@ fn main() -> io::Result<()> {
 
         // wait for input
         // 60fps-ish
-        if event::poll(std::time::Duration::from_millis(16))? {
+        if let Ok(true) = event::poll(std::time::Duration::from_millis(16)) {
             if let Event::Key(key) = event::read()? {
                 // process key
                 handler::handle_key_events(key, &mut app);
